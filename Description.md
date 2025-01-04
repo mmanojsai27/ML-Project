@@ -95,12 +95,15 @@ pip install numpy pandas matplotlib seaborn scikit-learn shap
 Hardware:
 
 Minimum: Dual-core processor, 4 GB RAM
+
 Recommended: Quad-core processor, 8 GB RAM
 
 Software:
 
 Operating System: Windows, Linux, or macOS
+
 Python 3.7 or later
+
 Jupyter Notebook or any Python IDE for running scripts
 
 
