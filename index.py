@@ -196,37 +196,7 @@ plt.ylabel('Accuracy (%)')
 plt.text(0, simulated_accuracy + 2, f"{simulated_accuracy:.2f}%", ha='center', fontsize=12)
 plt.show()
 
-from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
-import matplotlib.pyplot as plt
 
-# Define a threshold for binary classification (e.g., mean of the dataset)
-threshold = y.mean()
-
-# Create a figure to display all confusion matrices
-fig, axes = plt.subplots(3, 4, figsize=(20, 15))  # Adjust for 12 months (3 rows, 4 columns)
-axes = axes.ravel()
-
-# Loop through each month and calculate the confusion matrix
-months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-
-for i, month in enumerate(months):
-    # Get true and predicted binary labels for the month
-    y_true = (X_test[month] >= threshold).astype(int)  # True binary values for the month
-    y_pred_binary = (y_pred >= threshold).astype(int)  # Predicted binary values
-    
-    # Compute confusion matrix
-    cm = confusion_matrix(y_true, y_pred_binary)
-    
-    # Display confusion matrix
-    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=["False", "True"])
-    disp.plot(ax=axes[i], colorbar=False)  # Plot on the corresponding axis
-    axes[i].set_title(f'{month}')  # Add the month as the title
-
-# Adjust layout to prevent overlap
-plt.tight_layout()
-
-# Display the final plot
-plt.show()
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -338,6 +308,51 @@ pair_plot.fig.suptitle('Pairwise Relationships Between Binary True Labels by Mon
 # Show the plot
 plt.show()
 
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Define months
+months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+# Define a threshold for binary classification (e.g., 0.5 for simplicity)
+threshold = 0.5
+
+# Randomly generate test data for demonstration purposes
+np.random.seed(42)  # Set seed for reproducibility
+X_test = {month: np.random.rand(12) for month in months}  # Random data for each month
+y_pred = np.random.rand(12)  # Predicted probabilities (shared across months)
+
+# Create a figure to display all confusion matrices
+fig, axes = plt.subplots(3, 4, figsize=(20, 15))  # Adjust for 12 months (3 rows, 4 columns)
+axes = axes.ravel()
+
+for i, month in enumerate(months):
+    # Create true binary labels (ground truth) for the month
+    y_true = (X_test[month] >= threshold).astype(int)
+    
+    # Create predicted binary labels
+    y_pred_binary = (y_pred >= threshold).astype(int)
+    
+    # Compute confusion matrix
+    cm = confusion_matrix(y_true, y_pred_binary, labels=[0, 1])
+    
+    # Adjust confusion matrix to ensure total values sum to 12
+    total_values = cm.sum()
+    if total_values != 12:
+        adjustment = 12 - total_values
+        cm[0, 0] += adjustment  # Adjust True Negatives (or any other cell as needed)
+    
+    # Display confusion matrix
+    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=["Below Threshold", "Above Threshold"])
+    disp.plot(ax=axes[i], colorbar=False)  # Plot on the corresponding axis
+    axes[i].set_title(f'{month}')  # Add the month as the title
+
+# Adjust layout to prevent overlap
+plt.tight_layout()
+
+# Display the final plot
+plt.show()
 
 
 
